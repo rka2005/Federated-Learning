@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 # CONFIGURATION & PATHS
 # ==========================
 base_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(base_dir, "data", "heart_disease_uci.csv")
+csv_path = os.path.join(base_dir, "data", "heart_disease_4.csv")
 output_dir = os.path.join(base_dir, "train")
 os.makedirs(output_dir, exist_ok=True)
 
