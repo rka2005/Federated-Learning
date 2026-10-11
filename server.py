@@ -17,7 +17,7 @@ app = Flask(__name__)
 # Replace this with your actual Cloudflare Quick Tunnel URL.
 
 GATEWAY_URL = (
-    "https://ent-pamela-nano-determine.trycloudflare.com"
+    "http://127.0.0.1:8001"
 )
 
 
@@ -243,7 +243,7 @@ def predict():
         print(
 
             f"{prediction['client']} "
-            f"→ "
+            f"-> "
             f"{prediction['probability'] * 100:.2f}%"
         )
 
@@ -307,26 +307,14 @@ def predict():
     # FINAL OUTPUT
     # --------------------------------------------------------
 
-    print("\n")
-    print("=" * 60)
-    print("FINAL RESULT")
-    print("=" * 60)
-
     print(
-        f"Final Probability: "
-        f"{final_probability * 100:.2f}%"
+        aggregator.format_result(
+            predictions,
+            final_probability,
+            risk,
+            RISK_THRESHOLD
+        )
     )
-
-    print(
-        f"Risk: {risk}"
-    )
-
-    print(
-        f"Participating Clients: "
-        f"{len(predictions)}"
-    )
-
-    print("=" * 60)
 
     # --------------------------------------------------------
     # RETURN
@@ -387,6 +375,14 @@ def predict():
 
             "risk":
                 risk,
+
+            "interpretation":
+                (
+                    "Above the configured risk threshold."
+                    if final_probability >= RISK_THRESHOLD
+                    else
+                    "Below the configured risk threshold."
+                ),
 
             "details":
                 aggregation_summary

@@ -206,8 +206,8 @@ curl http://127.0.0.1:8001/clients
 The current client API accepts JSON and returns a temporary test probability. This minimal request is enough to exercise the complete orchestration flow:
 
 ```powershell
-curl -X POST http://127.0.0.1:8000/predict `
-  -H "Content-Type: application/json" `
+curl -X POST "http://127.0.0.1:8000/predict" \
+  -H "Content-Type: application/json" \
   -d '{"age": 55, "Maximum Heart Rate": 140, "Cholesterol Level": 220}'
 ```
 
@@ -231,6 +231,8 @@ A successful response contains scheduler status, individual client results, and 
 ```
 
 The exact client list depends on which services are online. Individual prediction records are populated from the live gateway response.
+
+After aggregation, the scheduler also prints a formatted result card in its terminal. The card shows the final assessment, probability bar, threshold interpretation, participating client count, and a reminder that the output is not a medical diagnosis.
 
 ## Training a Client Model
 

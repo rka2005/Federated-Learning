@@ -135,3 +135,79 @@ class PredictionAggregator:
                 2
             )
         }
+
+    # ============================================================
+    # USER-FACING RESULT
+    # ============================================================
+
+    def format_result(
+        self,
+        predictions: List[Dict],
+        final_probability: float,
+        risk: str,
+        threshold: float = 0.5
+    ) -> str:
+
+        percentage = max(
+            0.0,
+            min(100.0, final_probability * 100)
+        )
+
+        bar_width = 24
+        filled_width = round(
+            percentage / 100 * bar_width
+        )
+        probability_bar = (
+            "#" * filled_width
+            + "-" * (bar_width - filled_width)
+        )
+
+        interpretation = (
+            "The combined model result is above the "
+            f"{threshold * 100:.0f}% risk threshold."
+            if final_probability >= threshold
+            else
+            "The combined model result is below the "
+            f"{threshold * 100:.0f}% risk threshold."
+        )
+
+        clients = ", ".join(
+            item["client"]
+            for item in predictions
+        )
+
+        def line(content: str = "") -> str:
+            return f"| {content:<58} |"
+
+        return (
+            "\n"
+            "+------------------------------------------------------------+\n"
+            f"|{'FINAL PREDICTION RESULT':^60}|\n"
+            "+------------------------------------------------------------+\n"
+            + line(f"Assessment : {risk}")
+            + "\n"
+            + line(
+                f"Probability: {percentage:>6.2f}%  "
+                f"[{probability_bar}]"
+            )
+            + "\n"
+            + line(f"Clients    : {len(predictions)}")
+            + "\n"
+            "+------------------------------------------------------------+\n"
+            + line(interpretation)
+            + "\n"
+            + line(
+                "This is an experimental model result, not a medical"
+            )
+            + "\n"
+            + line(
+                "diagnosis. Please consult a qualified healthcare"
+            )
+            + "\n"
+            + line("professional for medical advice.")
+            + "\n"
+            "+------------------------------------------------------------+\n"
+            + line(f"Participating clients: {clients}")
+            + "\n"
+            "+------------------------------------------------------------+"
+        )
